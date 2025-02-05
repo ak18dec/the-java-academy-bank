@@ -2,9 +2,11 @@ package com.ankit.the_java_academy_bank.service.impl;
 
 import com.ankit.the_java_academy_bank.dto.AccountInfo;
 import com.ankit.the_java_academy_bank.dto.BankResponse;
+import com.ankit.the_java_academy_bank.dto.EmailDetails;
 import com.ankit.the_java_academy_bank.dto.UserRequest;
 import com.ankit.the_java_academy_bank.entity.User;
 import com.ankit.the_java_academy_bank.repository.UserRepository;
+import com.ankit.the_java_academy_bank.service.EmailService;
 import com.ankit.the_java_academy_bank.service.UserService;
 import com.ankit.the_java_academy_bank.utils.AccountUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +19,9 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private EmailService emailService;
     
     @Override
     public BankResponse createAccount(UserRequest userRequest) {
@@ -48,6 +53,17 @@ public class UserServiceImpl implements UserService {
                 .build();
 
         User savedUser = userRepository.save(newUser);
+
+        //Send email alert
+        EmailDetails emailDetails = EmailDetails.builder()
+                .recipient(savedUser.getEmail())
+                .subject("ACCOUNT CREATION")
+                .messageBody("Congratulations! Your Account has been successfully created.\n Your Account Details: \n" +
+                        "Account Name: " + savedUser.getFirstName() + " " + savedUser.getLastName() + " " + savedUser.getOtherName() + "\n" +
+                        "Account Number: " + savedUser.getAccountNumber())
+                .build();
+        emailService.sendEmailAlert(emailDetails);
+
         return BankResponse.builder()
                 .responseCode(AccountUtils.ACCOUNT_CREATION_SUCCESS)
                 .responseMessage(AccountUtils.ACCOUNT_CREATION_MESSAGE)
