@@ -1,9 +1,6 @@
 package com.ankit.the_java_academy_bank.service;
 
-import com.ankit.the_java_academy_bank.dto.BankResponse;
-import com.ankit.the_java_academy_bank.dto.CreditDebitRequest;
-import com.ankit.the_java_academy_bank.dto.EnquiryRequest;
-import com.ankit.the_java_academy_bank.dto.UserRequest;
+import com.ankit.the_java_academy_bank.dto.*;
 
 public interface UserService {
 
@@ -12,4 +9,5 @@ public interface UserService {
     String nameEnquiry(EnquiryRequest request);
     BankResponse creditAccount(CreditDebitRequest request);
     BankResponse debitAccount(CreditDebitRequest request);
+    BankResponse transfer(TransferRequest request);
 }
